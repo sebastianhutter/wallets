@@ -12,7 +12,7 @@ class WalletsConfiguration(object):
     def __init__(self):
         """ initialize config """
         self.global_settings = {}
-        self.global_settings['database'] = os.getenv('WALLETS_DATABASE','data.db')
+        self.global_settings['database'] = os.getenv('WALLETS_DATABASE','wallets.db')
         self.global_settings['schedule'] = os.getenv('WALLETS_SCHEDULE',None)
 
         # load exchanges
