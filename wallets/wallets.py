@@ -104,14 +104,14 @@ if __name__ == '__main__':
         database = None
 
         # now lets start reading our current wallets from the different exchanges
-        if configuration.global_settings['schedule'] > 0:
+        if int(configuration.global_settings['schedule']) > 0:
             query_exchanges(exchanges, configuration.global_settings['database'], configuration.global_settings['schedule'])
         if configuration.global_settings['scanonstart']:
             query_exchanges(exchanges, configuration.global_settings['database'])
 
         if configuration.global_settings['website']:
             # start bottle webapp
-            service = Webservice(host=configuration.global_settings['ip'], port=configuration.global_settings['port'])
+            service = Webservice(host=configuration.global_settings['ip'], port=int(configuration.global_settings['port']))
             service.run()
 
 
