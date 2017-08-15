@@ -67,7 +67,7 @@ class Database(object):
         cursor.execute('INSERT INTO balance VALUES (?, ?, ?)',data)
         self.connection.commit()
 
-    def insert_rates(self, exchange_name, currency, rate, rate_timestamp):
+    def insert_rates(self, exchange_name, from_currency, to_currency, rate, rate_timestamp):
         """
             insert the current rate with timestamp for the given exchange
         """
@@ -78,8 +78,8 @@ class Database(object):
         cursor.execute('SELECT id FROM exchange WHERE name = ?',data)
         exchange_id = cursor.fetchone()[0]
         # insert rate
-        data = (exchange_id, rate_timestamp, currency, rate)
-        cursor.execute('INSERT INTO rate VALUES (?, ?, ?, ?)',data)
+        data = (exchange_id, rate_timestamp, from_currency, to_currency, rate)
+        cursor.execute('INSERT INTO rate VALUES (?, ?, ?, ?, ?)',data)
         self.connection.commit()
 
 
