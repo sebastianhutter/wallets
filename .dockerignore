@@ -1,0 +1,11 @@
+*.sublime-project
+*.sublime-workspace
+.git
+.gitignore
+.env
+*.db
+*.pyc
+__pycache__
+__pycache__/*
+pipeline.gocd.yaml
+Makefile
