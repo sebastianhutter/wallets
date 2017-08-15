@@ -22,7 +22,7 @@ class Database(object):
         cursor.execute('CREATE TABLE IF NOT EXISTS exchange (id integer PRIMARY KEY, name text NOT NULL)')
         cursor.execute('CREATE TABLE IF NOT EXISTS wallet (id integer PRIMARY KEY, fk_exchange integer NOT NULL, type text NOT NULL, currency test NOT NULL, FOREIGN KEY (fk_exchange) REFERENCES exchange(id))')
         cursor.execute('CREATE TABLE IF NOT EXISTS balance (fk_wallet integer NOT NULL, timestamp integer NOT NULL, balance float NOT NULL, FOREIGN KEY (fk_wallet) REFERENCES wallet(id))')
-        cursor.execute('CREATE TABLE IF NOT EXISTS rate (fk_exchange integer NOT NULL, timestamp integer NOT NULL, currency text NOT NULL, rate float NOT NULL, FOREIGN KEY (fk_exchange) REFERENCES exchange(id))')
+        cursor.execute('CREATE TABLE IF NOT EXISTS rate (fk_exchange integer NOT NULL, timestamp integer NOT NULL, from_currency text NOT NULL, to_currency text NOT NULL, rate float NOT NULL, FOREIGN KEY (fk_exchange) REFERENCES exchange(id))')
 
         self.connection.commit()
 
