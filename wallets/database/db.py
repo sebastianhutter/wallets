@@ -129,3 +129,37 @@ class Database(object):
 
         return (result[0])
 
+    def get_balance_from_wallet(self, wallet_id, days):
+        """
+            get the last n days of balances 
+        """
+        cursor = self.connection.cursor()
+        cursor.execute('SELECT timestamp, balance FROM balance WHERE fk_wallet = ? AND timestamp BETWEEN strftime(\'%s\',\'now\', \'-{} days\', \'utc\') AND strftime(\'%s\',\'now\', \'utc\') ORDER BY timestamp'.format(int(days)),(wallet_id,))
+        result = cursor.fetchall()
+
+        balance = []
+        for r in result:
+            balance.append({'timestamp':r[0], 'balance':r[1]})
+
+        return balance
+
+    def get_rate_for_wallet(self, wallet_id, to_currency, days):
+        """
+            get the last conversion rates from the db
+        """
+        cursor = self.connection.cursor()
+        data = ( wallet_id, wallet_id, to_currency )
+        cursor.execute('SELECT timestamp, rate FROM rate WHERE fk_exchange = (SELECT fk_exchange FROM wallet WHERE id = ?) AND from_currency = (SELECT currency FROM WALLET WHERE id = ?) AND to_currency = ? AND timestamp BETWEEN strftime(\'%s\',\'now\', \'-{} days\', \'utc\') AND strftime(\'%s\',\'now\', \'utc\') ORDER BY timestamp'.format(int(days)),data)
+        result = cursor.fetchall()
+
+        rate = []
+        for r in result:
+            rate.append({'timestamp':r[0], 'rate':r[1]})
+
+
+        return(rate)
+
+        #cursor.execute('SELECT timestamp, balance FROM balance WHERE fk_wallet = ? AND timestamp BETWEEN strftime(\'%s\',\'now\', \'-{} days\', \'utc\') AND strftime(\'%s\',\'now\', \'utc\') ORDER BY timestamp'.format(int(days)),(wallet_id,))
+
+
+        return (result[0])
