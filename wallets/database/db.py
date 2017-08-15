@@ -82,4 +82,50 @@ class Database(object):
         cursor.execute('INSERT INTO rate VALUES (?, ?, ?, ?, ?)',data)
         self.connection.commit()
 
+    def get_exchanges(self):
+        """
+            returns a dict with all exchanges
+        """
+        cursor = self.connection.cursor()
+        exchanges = []
+        cursor.execute('SELECT id, name FROM exchange')
+        result = cursor.fetchall()
+        for r in result:
+            exchanges.append({'id': r[0], 'name': r[1]})
+
+        return exchanges
+
+    def get_wallets_from_exchange(self, exchange_id):
+        """
+            retrieve all wallets for the specified exchange
+        """
+        cursor = self.connection.cursor()
+        wallets = []
+        cursor.execute('SELECT id, type, currency FROM wallet WHERE fk_exchange = ?',(exchange_id,))
+        result = cursor.fetchall()
+        for r in result:
+            wallets.append({'id':r[0], 'type':r[1], 'currency':r[2]})
+
+        return wallets
+
+    def get_last_balance_from_wallet(self, wallet_id):
+        """
+            get the last balance from the specified wallet
+        """
+        cursor = self.connection.cursor()
+        cursor.execute('SELECT timestamp, balance FROM balance WHERE fk_wallet = ? ORDER BY timestamp DESC LIMIT 1',(wallet_id,))
+        result = cursor.fetchone()
+
+        return {'timestamp':result[0], 'balance':result[1]}
+
+    def get_last_rates_from_exchange(self, exchange_id):
+        """
+            get the last conversion rates from the db
+        """
+        cursor = self.connection.cursor()
+        cursor.execute('SELECT timestamp, currency, rate FROM balance WHERE fk_wallet = ? ORDER BY timestamp DESC LIMIT 1',(wallet_id,))
+        result = cursor.fetchone()
+
+        return {'timestamp':result[0], 'balance':result[1]}
+
 
