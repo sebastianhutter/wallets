@@ -15,18 +15,16 @@
 import traceback
 import logging
 
-import time
 from threading import Timer
-
-
 
 from exchanges.bitfinex import Bitfinex
 from exchanges.kraken import Kraken
-
 from cryptocompare import cryptocompare
 from database import db
 
 from config.wallets import WalletsConfiguration
+
+from webservice.service import Webservice
 
 # configure logger
 # http://docs.python-guide.org/en/latest/writing/logging/
@@ -106,10 +104,16 @@ if __name__ == '__main__':
         database = None
 
         # now lets start reading our current wallets from the different exchanges
-        if 'schedule' in configuration.global_settings:
+        if configuration.global_settings['schedule'] > 0:
             query_exchanges(exchanges, configuration.global_settings['database'], configuration.global_settings['schedule'])
-        else:
+        if configuration.global_settings['scanonstart']:
             query_exchanges(exchanges, configuration.global_settings['database'])
+
+        if configuration.global_settings['website']:
+            # start bottle webapp
+            service = Webservice()
+            service.run()
+
 
     except Exception as err:
         logger.error(err)
