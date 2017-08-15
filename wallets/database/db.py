@@ -118,14 +118,14 @@ class Database(object):
 
         return {'timestamp':result[0], 'balance':result[1]}
 
-    def get_last_rates_from_exchange(self, exchange_id):
+    def get_last_rate_for_wallet_currency(self, wallet_id, timestamp, to_currency):
         """
             get the last conversion rates from the db
         """
         cursor = self.connection.cursor()
-        cursor.execute('SELECT timestamp, currency, rate FROM balance WHERE fk_wallet = ? ORDER BY timestamp DESC LIMIT 1',(wallet_id,))
+        data = ( wallet_id, wallet_id, timestamp, to_currency )
+        cursor.execute('SELECT rate FROM rate WHERE fk_exchange = (SELECT fk_exchange FROM wallet WHERE id = ?) AND from_currency = (SELECT currency FROM WALLET WHERE id = ?) AND timestamp = ? AND to_currency = ?',data)
         result = cursor.fetchone()
 
-        return {'timestamp':result[0], 'balance':result[1]}
-
+        return (result[0])
 
