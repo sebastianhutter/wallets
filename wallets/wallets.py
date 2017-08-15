@@ -74,8 +74,9 @@ def query_exchanges(exchanges, database_file, schedule=None):
                     if not exchange_rates:
                         exchange_rates = rates.price(from_currency=wallet.currency)
                     # now add the rates to the database
-                    for currency, rate in exchange_rates.items():
-                        database.insert_rates(exchange_name=exchange_name, currency=currency, rate=rate, rate_timestamp=wallet.last_update.strftime('%s'))
+                    for from_currency, currency_rates in exchange_rates.items():
+                        for to_currency, rate in currency_rates.items():
+                            database.insert_rates(exchange_name=exchange_name, from_currency=from_currency, to_currency=to_currency, rate=rate, rate_timestamp=wallet.last_update.strftime('%s'))
 
             except BaseException as err:
                 logger.error("problem encountered while requesting wallets from {}. error message: {}".format(exchange_name, err))
