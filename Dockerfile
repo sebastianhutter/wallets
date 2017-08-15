@@ -10,13 +10,8 @@ RUN apk --no-cache add --virtual build-dependencies build-base gcc binutils linu
   pip install --upgrade -r /requirements.txt && \
   apk del build-dependencies
 
-ADD build/docker-entrypoint.sh /docker-entrypoint.sh
-
-RUN adduser -D wallets \
-  && chmod +x /docker-entrypoint.sh
-
+RUN adduser -D wallets
 ADD wallets /app
-
 USER wallets
 WORKDIR /app
 
