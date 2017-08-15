@@ -20,7 +20,8 @@ class WalletsConfiguration(object):
         self.global_settings['scanonstart'] = os.getenv('WALLETS_SCAN_ON_START',False)
         # set to true to enable webinterface for easier browsing
         self.global_settings['website'] = os.getenv('WALLETS_WEBSITE',False)
-
+        self.global_settings['port'] = os.getenv('WALLETS_WEBSITE_PORT',80)
+        self.global_settings['ip'] = os.getenv('WALLETS_WEBSITE_IP','0.0.0.0')
         # verify valuess
         if str(self.global_settings['scanonstart']).lower() in ['true', '1', 't', 'y', 'yes' ]:
             self.global_settings['scanonstart'] = True

@@ -4,10 +4,11 @@ from bottle import Bottle, route, template, request
 
 class Webservice(object):
     """docstring for Webservice"""
-    def __init__(self):
+    def __init__(self, ip, port):
         
         self.app = Bottle()
-
+        self.ip = ip
+        self.port = port
         self.app.route('/', method='GET', callback=self.overview)
 
 
@@ -16,4 +17,4 @@ class Webservice(object):
 
 
     def run(self):
-        Bottle.run(self.app, host='0.0.0.0', port=65000)
+        Bottle.run(self.app, host=self.ip, port=self.port)

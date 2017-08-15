@@ -111,7 +111,7 @@ if __name__ == '__main__':
 
         if configuration.global_settings['website']:
             # start bottle webapp
-            service = Webservice()
+            service = Webservice(host=configuration.global_settings['ip'], port=configuration.global_settings['port'])
             service.run()
 
 
