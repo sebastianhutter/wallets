@@ -36,7 +36,7 @@ class CrytpoCompare(object):
             else:
               raise BaseException("Unable to query rates for currency {}".format(currency))
         else:
-          return data
+          return {from_currency: data}
 
     def price_historical(self, from_currency, timestamp,
                          to_currency=None, exchange=None):
@@ -58,5 +58,13 @@ class CrytpoCompare(object):
                    'markets': exchange,
                    'ts': timestamp}
         request = requests.get(url, params=payload)
+        data = request.json()
 
-        print (request.json())
+        if 'Response' in data:
+          if data['Response'] == 'Error':
+            if 'market does not exist for this coin pair' in data['Message'] and exchange != self.exchange:
+              return None
+            else:
+              raise BaseException("Unable to query rates for currency {}".format(currency))
+        else:
+          return {from_currency: data}
