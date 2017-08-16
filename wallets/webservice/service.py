@@ -128,8 +128,7 @@ class Webservice(object):
             for r in rate:
                 time = datetime.fromtimestamp(r['timestamp'])
                 r['timestamp']= datetime.strftime(time,"%Y-%m-%d %H:%M:%S.%f")
-            # convert to matrix
-            balance = pandas.DataFrame(balance)
+
             # create a panda matrix
             rate = pandas.DataFrame(rate)
             # from here we convert to numpy else somehow no graph is displayed
