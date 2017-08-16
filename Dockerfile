@@ -10,6 +10,8 @@ RUN apk --no-cache add --virtual build-dependencies build-base gcc binutils linu
   pip install --upgrade -r /requirements.txt && \
   apk del build-dependencies
 
+RUN apk add --no-cache libstdc++
+
 RUN adduser -D wallets
 ADD wallets /app
 USER wallets
