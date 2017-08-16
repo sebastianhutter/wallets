@@ -104,7 +104,7 @@ class Webservice(object):
         """ render timeline graph for specified date range and exchange """
 
         # prepare the plot
-        p = figure(width=800, height=150, x_axis_type="datetime")
+        p = figure(width=800, height=350, x_axis_type="datetime")
         p.title.text = "Exchange Rate Overview"
         p.legend.location = "top_left"
         p.grid.grid_line_alpha=0
