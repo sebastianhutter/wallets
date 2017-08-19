@@ -21,7 +21,7 @@ class WalletsConfiguration(object):
         # set to true to enable webinterface for easier browsing
         self.global_settings['website'] = os.getenv('WALLETS_WEBSITE',False)
         # how much data should be displayed in the graphs on the overview page
-        self.global_settings['overview_timeframe'] = os.getenv('WALLETS_OVERVIEW_TIME',False)
+        self.global_settings['overview_timeframe'] = os.getenv('WALLETS_OVERVIEW_TIME','5')
         self.global_settings['overview_modifier'] = os.getenv('WALLETS_OVERVIEW_MODIFIER','days')
         # tcp port the webservice is listening on 
         self.global_settings['port'] = os.getenv('WALLETS_WEBSITE_PORT',80)
