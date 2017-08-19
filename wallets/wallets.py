@@ -19,6 +19,7 @@ from threading import Timer
 
 from exchanges.bitfinex import Bitfinex
 from exchanges.kraken import Kraken
+from exchanges.bittrex import Bittrex
 from cryptocompare import cryptocompare
 from database import db
 
