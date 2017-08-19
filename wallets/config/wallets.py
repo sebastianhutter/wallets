@@ -20,7 +20,12 @@ class WalletsConfiguration(object):
         self.global_settings['scanonstart'] = os.getenv('WALLETS_SCAN_ON_START',False)
         # set to true to enable webinterface for easier browsing
         self.global_settings['website'] = os.getenv('WALLETS_WEBSITE',False)
+        # how much data should be displayed in the graphs on the overview page
+        self.global_settings['overview_timeframe'] = os.getenv('WALLETS_OVERVIEW_TIME',False)
+        self.global_settings['overview_modifier'] = os.getenv('WALLETS_OVERVIEW_MODIFIER','days')
+        # tcp port the webservice is listening on 
         self.global_settings['port'] = os.getenv('WALLETS_WEBSITE_PORT',80)
+        # ip addresss the webservice is listening on
         self.global_settings['ip'] = os.getenv('WALLETS_WEBSITE_IP','0.0.0.0')
         # verify valuess
         if str(self.global_settings['scanonstart']).lower() in ['true', '1', 't', 'y', 'yes' ]:
@@ -31,6 +36,8 @@ class WalletsConfiguration(object):
             self.global_settings['website'] = True
         else:
             self.global_settings['website'] = False
+
+
 
         # load exchanges
         self.exchanges = {}

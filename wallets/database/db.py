@@ -129,12 +129,18 @@ class Database(object):
 
         return (result[0])
 
-    def get_balance_from_wallet(self, wallet_id, days):
+    def get_balance_from_wallet(self, wallet_id, timeframe, modifier="days"):
         """
-            get the last n days of balances 
+            get the last n days. hours, minutes of balances 
         """
+
+        # lets make sure we use a supported time
+        if not modifier in ["years", "months", "days", "hours", "minutes", "seconds"]:
+            raise BaseException("unsupported modifier")
+
+
         cursor = self.connection.cursor()
-        cursor.execute('SELECT timestamp, balance FROM balance WHERE fk_wallet = ? AND timestamp BETWEEN strftime(\'%s\',\'now\', \'-{} days\', \'utc\') AND strftime(\'%s\',\'now\', \'utc\') ORDER BY timestamp'.format(int(days)),(wallet_id,))
+        cursor.execute('SELECT timestamp, balance FROM balance WHERE fk_wallet = ? AND timestamp BETWEEN strftime(\'%s\',\'now\', \'-{} {}\', \'utc\') AND strftime(\'%s\',\'now\', \'utc\') ORDER BY timestamp'.format(int(timeframe),modifier),(wallet_id,))
         result = cursor.fetchall()
 
         balance = []
@@ -143,13 +149,18 @@ class Database(object):
 
         return balance
 
-    def get_rate_for_wallet(self, wallet_id, to_currency, days):
+    def get_rate_for_wallet(self, wallet_id, to_currency, timeframe, modifier="days"):
         """
             get the last conversion rates from the db
         """
+
+        # lets make sure we use a supported time
+        if not modifier in ["years", "months", "days", "hours", "minutes", "seconds"]:
+            raise BaseException("unsupported modifier")
+
         cursor = self.connection.cursor()
         data = ( wallet_id, wallet_id, to_currency )
-        cursor.execute('SELECT timestamp, rate FROM rate WHERE fk_exchange = (SELECT fk_exchange FROM wallet WHERE id = ?) AND from_currency = (SELECT currency FROM WALLET WHERE id = ?) AND to_currency = ? AND timestamp BETWEEN strftime(\'%s\',\'now\', \'-{} days\', \'utc\') AND strftime(\'%s\',\'now\', \'utc\') ORDER BY timestamp'.format(int(days)),data)
+        cursor.execute('SELECT timestamp, rate FROM rate WHERE fk_exchange = (SELECT fk_exchange FROM wallet WHERE id = ?) AND from_currency = (SELECT currency FROM WALLET WHERE id = ?) AND to_currency = ? AND timestamp BETWEEN strftime(\'%s\',\'now\', \'-{} {}\', \'utc\') AND strftime(\'%s\',\'now\', \'utc\') ORDER BY timestamp'.format(int(timeframe),modifier),data)
         result = cursor.fetchall()
 
         rate = []

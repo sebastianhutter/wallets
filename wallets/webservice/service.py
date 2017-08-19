@@ -37,8 +37,8 @@ class Webservice(object):
         exchanges_raw = self.database.get_exchanges()
         for e in exchanges_raw:
             exchange = { 'name': e['name'], 'wallets': [], 
-                         'coin_graph': self._render_coin_balance_graph_exchange(5,e['id']), 
-                         'rate_graph': self._render_rate_balance_graph_exchange(5,e['id']),
+                         'coin_graph': self._render_coin_balance_graph_exchange(e['id'], self.config['overview']['timeframe'], self.config['overview']['modifier']), 
+                         'rate_graph': self._render_rate_balance_graph_exchange(e['id'], self.config['overview']['timeframe'], self.config['overview']['modifier']),
                          'total': 0
                         }
             wallets_raw = self.database.get_wallets_from_exchange(e['id'])
@@ -54,7 +54,7 @@ class Webservice(object):
         return template('overview', data={'exchanges': exchanges})
 
 
-    def _render_coin_balance_graph_exchange(self, days, exchange_id):
+    def _render_coin_balance_graph_exchange(self, exchange_id, timeframe, modifier):
         """ render timeline graph for specified date range and exchange """
 
         # prepare the plot
@@ -78,7 +78,7 @@ class Webservice(object):
                 continue
 
             # get the last n days of balance data
-            balance = self.database.get_balance_from_wallet(w['id'],days)
+            balance = self.database.get_balance_from_wallet(w['id'],timeframe,modifier)
             # fix the dateformat for the balance entries
             for b in balance:
                 time = datetime.fromtimestamp(b['timestamp'])
@@ -100,7 +100,7 @@ class Webservice(object):
 
         return {'script': script, 'div': div}
 
-    def _render_rate_balance_graph_exchange(self, days, exchange_id):
+    def _render_rate_balance_graph_exchange(self, exchange_id, timeframe, modifier):
         """ render timeline graph for specified date range and exchange """
 
         # prepare the plot
@@ -123,7 +123,7 @@ class Webservice(object):
             if w['currency'] == "EUR":
                 continue
             # get the last n days of exachange rates
-            rate = self.database.get_rate_for_wallet(w['id'],'EUR',days)
+            rate = self.database.get_rate_for_wallet(w['id'],'EUR',timeframe,modifier)
             # fix the dateformat for the balance entries
             for r in rate:
                 time = datetime.fromtimestamp(r['timestamp'])
