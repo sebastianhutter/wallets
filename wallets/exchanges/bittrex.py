@@ -65,7 +65,6 @@ class Bittrex(object):
             raise BaseException("unable to query bittrex api. try again later")
 
         for wallet in response.json()['result']:
-            print(wallet)
             wallets.append(ExchangeWallet(last_update=timestamp,
                                           currency=CurrencyTranslator.translate(wallet['Currency']),
                                           balance='{0:.8f}'.format(float(wallet['Balance']))))
