@@ -19,15 +19,19 @@ from database import db
 
 class Webservice(object):
     """docstring for Webservice"""
-    def __init__(self, ip, port, database):
+    def __init__(self, configuration):
         
+        # setup bottle app
         self.app = Bottle()
 
-        self.ip = ip
-        self.port = port
+        # get config
+        self.config = configuration
+        self.database = db.Database(self.config['database'])
+
+        # add routes
         self.app.route('/', method='GET', callback=self.overview)
 
-        self.database = db.Database(database)
+        
 
     def overview(self):
         #return "hello world"
@@ -144,4 +148,4 @@ class Webservice(object):
         return {'script': script, 'div': div}
 
     def run(self):
-        Bottle.run(self.app, host=self.ip, port=self.port)
+        Bottle.run(self.app, host=self.config['ip'], port=self.config['port'])
