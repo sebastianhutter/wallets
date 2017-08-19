@@ -110,8 +110,18 @@ if __name__ == '__main__':
             query_exchanges(exchanges, configuration.global_settings['database'])
 
         if configuration.global_settings['website']:
+            # create configuration for the webserivce
+            service_config = {
+                'ip': configuration.global_settings['ip'],
+                'port': configuration.global_settings['port'],
+                'database': configuration.global_settings['database'],
+                'overview': {
+                    'timeframe': configuration.global_settings['overview_timeframe'],
+                    'modifier': configuration.global_settings['overview_modifier'],
+                }
+            }
             # start bottle webapp
-            service = Webservice(ip=configuration.global_settings['ip'], port=int(configuration.global_settings['port']), database=configuration.global_settings['database'])
+            service = Webservice(configuration=service_config)
             service.run()
 
 
