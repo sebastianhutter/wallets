@@ -158,8 +158,3 @@ class Database(object):
 
 
         return(rate)
-
-        #cursor.execute('SELECT timestamp, balance FROM balance WHERE fk_wallet = ? AND timestamp BETWEEN strftime(\'%s\',\'now\', \'-{} days\', \'utc\') AND strftime(\'%s\',\'now\', \'utc\') ORDER BY timestamp'.format(int(days)),(wallet_id,))
-
-
-        return (result[0])
