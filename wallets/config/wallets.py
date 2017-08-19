@@ -63,3 +63,11 @@ class WalletsConfiguration(object):
                     'secret': os.getenv('WALLETS_BITFINEX_SECRET')
                 }
             })
+        # load bittrex config
+        if os.getenv('WALLETS_BITTREX_KEY') and os.getenv('WALLETS_BITTREX_SECRET'):
+            self.exchanges.update({
+                'Bittrex' : {
+                    'key': os.getenv('WALLETS_BITTREX_KEY'),
+                    'secret': os.getenv('WALLETS_BITTREX_SECRET')
+                }
+            })
