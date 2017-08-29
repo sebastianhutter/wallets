@@ -16,7 +16,7 @@ class CrytpoCompare(object):
           query the current prices
         """
 
-        if not to_currency:
+        if not to_currency: 
           to_currency = self.to_currency
 
         if not exchange:
@@ -68,3 +68,4 @@ class CrytpoCompare(object):
               raise BaseException("Unable to query rates for currency {}".format(currency))
         else:
           return {from_currency: data}
+

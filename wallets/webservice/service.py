@@ -83,25 +83,28 @@ class Webservice(object):
 
             # get the last n days of balance data
             balance = self.database.get_balance_from_wallet(w['id'],timeframe,modifier)
-            # fix the dateformat for the balance entries
-            for b in balance:
-                time = datetime.fromtimestamp(b['timestamp'])
-                b['timestamp']= datetime.strftime(time,"%Y-%m-%d %H:%M:%S.%f")
 
-            # convert to matrix
-            balance = pandas.DataFrame(balance)
+            # only get data from wallets with available balance 
+            if balance:
+                # fix the dateformat for the balance entries
+                for b in balance:
+                    time = datetime.fromtimestamp(b['timestamp'])
+                    b['timestamp']= datetime.strftime(time,"%Y-%m-%d %H:%M:%S.%f")
 
-            # from here we convert to numpy else somehow no graph is displayed
-            np_balance_balance = np.array(balance['balance'])
-            np_balance_timestamp = np.array(balance['timestamp'], dtype=np.datetime64)
+                # convert to matrix
+                balance = pandas.DataFrame(balance)
 
-            # add a line with the coins
-            # was not able to get the timeline working so we randomize
-            # our colors a little bit (will fail with more then 15 wallets in one exchange)
-            p.line(np_balance_timestamp, np_balance_balance, color=Category20[15][loop_count], legend=w['currency'])
-            loop_count = loop_count + 1
+                # from here we convert to numpy else somehow no graph is displayed
+                np_balance_balance = np.array(balance['balance'])
+                np_balance_timestamp = np.array(balance['timestamp'], dtype=np.datetime64)
+
+                # add a line with the coins
+                # was not able to get the timeline working so we randomize
+                # our colors a little bit (will fail with more then 15 wallets in one exchange)
+                p.line(np_balance_timestamp, np_balance_balance, color=Category20[15][loop_count], legend=w['currency'])
+                loop_count = loop_count + 1
+
         script, div = components(p)
-
         return {'script': script, 'div': div}
 
     def _render_rate_balance_graph_exchange(self, exchange_id, timeframe, modifier):
@@ -128,23 +131,25 @@ class Webservice(object):
                 continue
             # get the last n days of exachange rates
             rate = self.database.get_rate_for_wallet(w['id'],'EUR',timeframe,modifier)
-            # fix the dateformat for the balance entries
-            for r in rate:
-                time = datetime.fromtimestamp(r['timestamp'])
-                r['timestamp']= datetime.strftime(time,"%Y-%m-%d %H:%M:%S.%f")
+            # only get data from wallets with available rates 
+            if rate:
+                # fix the dateformat for the balance entries
+                for r in rate:
+                    time = datetime.fromtimestamp(r['timestamp'])
+                    r['timestamp']= datetime.strftime(time,"%Y-%m-%d %H:%M:%S.%f")
 
-            # create a panda matrix
-            rate = pandas.DataFrame(rate)
-            # from here we convert to numpy else somehow no graph is displayed
-            np_rate_rate= np.array(rate['rate'])
-            np_rate_timestamp = np.array(rate['timestamp'], dtype=np.datetime64)
-   
-            p.circle(np_rate_timestamp, np_rate_rate, color=Category20[15][loop_count], legend="exchange rate {}".format(w['currency']))
+                # create a panda matrix
+                rate = pandas.DataFrame(rate)
 
-            loop_count = loop_count + 1
+                # from here we convert to numpy else somehow no graph is displayed
+                np_rate_rate= np.array(rate['rate'])
+                np_rate_timestamp = np.array(rate['timestamp'], dtype=np.datetime64)
+       
+                p.circle(np_rate_timestamp, np_rate_rate, color=Category20[15][loop_count], legend="exchange rate {}".format(w['currency']))
+
+                loop_count = loop_count + 1
 
         script, div = components(p)
-
         return {'script': script, 'div': div}
 
     def run(self):
