@@ -71,3 +71,12 @@ class WalletsConfiguration(object):
                     'secret': os.getenv('WALLETS_BITTREX_SECRET')
                 }
             })
+        # load bitstamp config
+        if os.getenv('WALLETS_BITSTAMP_KEY') and os.getenv('WALLETS_BITSTAMP_SECRET') and os.getenv('WALLETS_BITSTAMP_CUSTOMERID'):
+            self.exchanges.update({
+                'Bitstamp' : {
+                    'key': os.getenv('WALLETS_BITSTAMP_KEY'),
+                    'secret': os.getenv('WALLETS_BITSTAMP_SECRET'),
+                    'customerid': os.getenv('WALLETS_BITSTAMP_CUSTOMERID')
+                }
+            })

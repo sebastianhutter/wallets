@@ -20,6 +20,7 @@ from threading import Timer
 from exchanges.bitfinex import Bitfinex
 from exchanges.kraken import Kraken
 from exchanges.bittrex import Bittrex
+from exchanges.bitstamp import Bitstamp
 from cryptocompare import cryptocompare
 from database import db
 
@@ -98,7 +99,10 @@ if __name__ == '__main__':
         exchanges = []
         for name,value in configuration.exchanges.items():
             # create the exchange object
-            exchange = eval(name)(value['key'],value['secret'])
+            if name == "Bitstamp":
+                exchange = eval(name)(value['key'],value['secret'],value['customerid'])
+            else:
+                exchange = eval(name)(value['key'],value['secret'])
             exchanges.append(exchange)
             # and make sure the exchange is registered in the database
             database.update_exchange(name)
