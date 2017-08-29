@@ -170,6 +170,22 @@ class Database(object):
 
         return(rate)
 
+    def get_timestamp_rate_for_wallet(self, wallet_id, to_currency, timestamp):
+        """
+            get the the conversion rate for the specified timestamp for the wallet
+        """
+
+        cursor = self.connection.cursor()
+        data = ( wallet_id, wallet_id, to_currency, timestamp )
+        cursor.execute('SELECT timestamp, rate FROM rate WHERE fk_exchange = (SELECT fk_exchange FROM wallet WHERE id = ?) AND from_currency = (SELECT currency FROM WALLET WHERE id = ?) AND to_currency = ? AND timestamp = ? ORDER BY timestamp', data)
+        result = cursor.fetchall()
+
+        rate = {}
+        for r in result:
+            rate = {'timestamp':r[0], 'rate':r[1]}
+            
+        return(rate)
+
     def get_balance_in_euro_from_wallet(self, wallet_id, timeframe, modifier="days"):
         # get the balance and the euro exchange rates from the db
         balance = self.get_balance_from_wallet(wallet_id, timeframe, modifier)
@@ -184,3 +200,28 @@ class Database(object):
                     balance_with_rate.append({'timestamp': b['timestamp'], 'rate': r['rate'], 'balance': b['balance'], 'euro': r['rate']*b['balance']})
 
         return balance_with_rate
+
+
+    def get_balance_in_euro_from_exchange(self, exchange_id, timeframe, modifier="days"):
+        """ lets get all wallets from the database and calculate he overall euro value """
+
+        wallets = self.get_wallets_from_exchange(exchange_id)
+
+        overall_euro_balance = []
+        for wallet in wallets:
+            balance = self.get_balance_from_wallet(wallet['id'], timeframe, modifier)
+            rate = self.get_rate_for_wallet(wallet['id'], 'EUR', timeframe, modifier)
+            # 2017-08-29: https://stackoverflow.com/questions/40981043/merge-two-list-of-dictionaries-with-same-keyvalue-in-python
+            combined = ([dict(b, **r) for b in balance for r in rate if b['timestamp'] == r['timestamp']])
+
+            for c in combined:
+                try:
+                    # 2017-08-29 get index of timestamp in overall dict
+                    # https://stackoverflow.com/questions/4391697/find-the-index-of-a-dict-within-a-list-by-matching-the-dicts-value
+                    index = next(index for (index, d) in enumerate(overall_euro_balance) if d["timestamp"] == c['timestamp'])
+                    overall_euro_balance[index]['euro'] = overall_euro_balance[index]['euro'] + c['balance']*c['rate']
+                except:
+                    overall_euro_balance.append({'timestamp':c['timestamp'], 'euro': c['balance']*c['rate']})
+
+            return overall_euro_balance
+
