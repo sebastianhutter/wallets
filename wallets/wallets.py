@@ -100,7 +100,7 @@ if __name__ == '__main__':
         for name,value in configuration.exchanges.items():
             # create the exchange object
             if name == "Bitstamp":
-                exchange = eval(name)(value['key'],value['secret'],value['customerid'])
+                exchange = eval(name)(value['customerid'], value['key'],value['secret'])
             else:
                 exchange = eval(name)(value['key'],value['secret'])
             exchanges.append(exchange)
