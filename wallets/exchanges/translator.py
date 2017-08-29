@@ -7,6 +7,8 @@ class CurrencyTranslator(object):
 
     @staticmethod
     def translate(currency):
+        c = currency.upper()
+
         translations = {
             'ZEUR': "EUR",
             'XXBT': "BTC",
@@ -15,7 +17,7 @@ class CurrencyTranslator(object):
             'XETH': "ETH"
         }
 
-        if currency in translations:
-            return translations[currency]
+        if c in translations:
+            return translations[c]
         else:
-            return currency
+            return c

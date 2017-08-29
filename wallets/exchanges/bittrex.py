@@ -29,7 +29,6 @@ class Bittrex(object):
         # create url from url and params
         # 2017-08-19 https://stackoverflow.com/questions/18869074/create-url-without-request-execution
         url = requests.Request('GET', url, params=params).prepare().url
-        print(url)
         h = hmac.new(self.api_secret.encode(), url.encode(), hashlib.sha512)
         signature = h.hexdigest()
 
@@ -45,8 +44,6 @@ class Bittrex(object):
         params['nonce'] = self._nonce()
         url = self.base_url + path
         headers = self._headers(url, params)
-
-        print (headers)
 
         resp = requests.get(url, headers=headers, params=params, verify=True)
         resp.raise_for_status()
