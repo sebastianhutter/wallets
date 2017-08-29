@@ -60,7 +60,7 @@ class Webservice(object):
 
 
     def _render_euro_balance_graph_exchange(self, exchange_id, timeframe, modifier):
-        """ render a graph with total value of wallets per exchange """
+        """ render a graph with total value of all wallets per exchange """
 
         # prepare the plot
         p = figure(width=800, height=350, x_axis_type="datetime")
@@ -72,40 +72,28 @@ class Webservice(object):
         p.ygrid.band_fill_color="olive"
         p.ygrid.band_fill_alpha = 0.1
 
-        # get all wallets from the exchange
-        wallets = self.database.get_wallets_from_exchange(exchange_id)
-        # get the balance and exchange rate for the specified timeframe
-        # loop trough all wallets and prepare the balance
-        loop_count = 0
-        for w in wallets:
-            # if we are working on EUROS we wont add it 
-            if w['currency'] == "EUR":
-                continue
+        balance = self.database.get_balance_in_euro_from_exchange(exchange_id, timeframe, modifier)
 
-            # get the last n days of balance data
-            balance = self.database.get_balance_in_euro_from_wallet(w['id'],timeframe,modifier)
-
-            # only get data from wallets with available balance 
-            if balance:
-                # fix the dateformat for the balance entries
-                for b in balance:
-                    time = datetime.fromtimestamp(b['timestamp'])
-                    b['timestamp']= datetime.strftime(time,"%Y-%m-%d %H:%M:%S.%f")
+        if balance:
+            # fix the dateformat for the balance entries
+            for b in balance:
+                time = datetime.fromtimestamp(b['timestamp'])
+                b['timestamp']= datetime.strftime(time,"%Y-%m-%d %H:%M:%S.%f")
 
 
-                #print ("{} :: {} :: {}".format(exchange_id, w['id'],balance))
-                # convert to matrix
-                balance = pandas.DataFrame(balance)
+            #print ("{} :: {} :: {}".format(exchange_id, w['id'],balance))
+            # convert to matrix
+            balance = pandas.DataFrame(balance)
 
-                # from here we convert to numpy else somehow no graph is displayed
-                np_balance_balance = np.array(balance['euro'])
-                np_balance_timestamp = np.array(balance['timestamp'], dtype=np.datetime64)
+            # from here we convert to numpy else somehow no graph is displayed
+            np_balance_balance = np.array(balance['euro'])
+            np_balance_timestamp = np.array(balance['timestamp'], dtype=np.datetime64)
 
-                # add a line with the coins
-                # was not able to get the timeline working so we randomize
-                # our colors a little bit (will fail with more then 15 wallets in one exchange)
-                p.line(np_balance_timestamp, np_balance_balance, color=Category20[15][loop_count], legend="{} in EUR".format(w['currency']))
-                loop_count = loop_count + 1
+            # add a line with the coins
+            # was not able to get the timeline working so we randomize
+            # our colors a little bit (will fail with more then 15 wallets in one exchange)
+            p.line(np_balance_timestamp, np_balance_balance, color=Category20[15][0], legend="Total in EUR")
+
 
         script, div = components(p)
         return {'script': script, 'div': div}
