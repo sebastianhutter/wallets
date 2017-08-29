@@ -59,6 +59,10 @@
       {{!exchange['rate_graph']['script']}}
       {{!exchange['rate_graph']['div']}}
     </p>
+    <p>
+      {{!exchange['euro_graph']['script']}}
+      {{!exchange['euro_graph']['div']}}
+    </p>
     <table>
       <tr class="title">
         <th>Timestamp</th>
