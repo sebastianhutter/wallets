@@ -169,3 +169,18 @@ class Database(object):
 
 
         return(rate)
+
+    def get_balance_in_euro_from_wallet(self, wallet_id, timeframe, modifier="days"):
+        # get the balance and the euro exchange rates from the db
+        balance = self.get_balance_from_wallet(wallet_id, timeframe, modifier)
+        rate = self.get_rate_for_wallet(wallet_id, 'EUR', timeframe, modifier)
+
+        # merge balance and rate baed on timestamp
+        # horribly inefficient but no motiviation to properly fix ;-)
+        balance_with_rate = []      
+        for b in balance:
+            for r in rate:
+                if b['timestamp'] == r['timestamp']:
+                    balance_with_rate.append({'timestamp': b['timestamp'], 'rate': r['rate'], 'balance': b['balance'], 'euro': r['rate']*b['balance']})
+
+        return balance_with_rate
