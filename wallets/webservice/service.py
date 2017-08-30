@@ -194,4 +194,5 @@ class Webservice(object):
         return {'script': script, 'div': div}
 
     def run(self):
-        Bottle.run(self.app, host=self.config['ip'], port=self.config['port'])
+        Bottle.run(self.app, host=self.config['ip'], port=self.config['port'], server=self.config['server'])
+
