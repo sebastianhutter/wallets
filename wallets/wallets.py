@@ -28,6 +28,8 @@ from config.wallets import WalletsConfiguration
 
 from webservice.service import Webservice
 
+import bottle
+
 # configure logger
 # http://docs.python-guide.org/en/latest/writing/logging/
 logger = logging.getLogger()
@@ -91,6 +93,7 @@ def query_exchanges(exchanges, database_file, schedule=None):
 # main
 #
 
+    
 if __name__ == '__main__':
     try:
         configuration = WalletsConfiguration()
@@ -120,6 +123,7 @@ if __name__ == '__main__':
                 'ip': configuration.global_settings['ip'],
                 'port': configuration.global_settings['port'],
                 'database': configuration.global_settings['database'],
+                'server': configuration.global_settings['server'],
                 'overview': {
                     'timeframe': configuration.global_settings['overview_timeframe'],
                     'modifier': configuration.global_settings['overview_modifier'],
@@ -129,7 +133,10 @@ if __name__ == '__main__':
             service = Webservice(configuration=service_config)
             service.run()
 
-
     except Exception as err:
         logger.error(err)
         traceback.print_exc()
+
+    
+
+

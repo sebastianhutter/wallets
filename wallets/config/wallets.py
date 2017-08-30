@@ -27,6 +27,7 @@ class WalletsConfiguration(object):
         self.global_settings['port'] = os.getenv('WALLETS_WEBSITE_PORT',80)
         # ip addresss the webservice is listening on
         self.global_settings['ip'] = os.getenv('WALLETS_WEBSITE_IP','0.0.0.0')
+        self.global_settings['server'] = os.getenv('WALLETS_WEBSITE_SERVER','wsgiref')
         # verify valuess
         if str(self.global_settings['scanonstart']).lower() in ['true', '1', 't', 'y', 'yes' ]:
             self.global_settings['scanonstart'] = True
