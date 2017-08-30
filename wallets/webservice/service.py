@@ -26,7 +26,6 @@ class Webservice(object):
 
         # get config
         self.config = configuration
-        self.database = db.Database(self.config['database'])
 
         # add routes
         self.app.route('/', method='GET', callback=self.overview)
@@ -34,11 +33,12 @@ class Webservice(object):
         
 
     def overview(self):
-        #return "hello world"
 
+        database = db.Database(self.config['database'])
         # lets get the exchanges from the database
         exchanges = []
-        exchanges_raw = self.database.get_exchanges()
+        exchanges_raw = database.get_exchanges()
+        
         for e in exchanges_raw:
             exchange = { 'name': e['name'], 'wallets': [], 
                          'coin_graph': self._render_coin_balance_graph_exchange(e['id'], self.config['overview']['timeframe'], self.config['overview']['modifier']), 
@@ -46,10 +46,10 @@ class Webservice(object):
                          'euro_graph': self._render_euro_balance_graph_exchange(e['id'], self.config['overview']['timeframe'], self.config['overview']['modifier']),
                          'total': 0
                         }
-            wallets_raw = self.database.get_wallets_from_exchange(e['id'])
+            wallets_raw = database.get_wallets_from_exchange(e['id'])
             for w in wallets_raw:
-                balance = self.database.get_last_balance_from_wallet(w['id'])
-                exchange_rate_EUR =self.database.get_last_rate_for_wallet_currency(wallet_id=w['id'], timestamp=balance['timestamp'], to_currency="EUR")
+                balance = database.get_last_balance_from_wallet(w['id'])
+                exchange_rate_EUR =database.get_last_rate_for_wallet_currency(wallet_id=w['id'], timestamp=balance['timestamp'], to_currency="EUR")
                 balance_in_EUR = math.ceil(balance['balance']*exchange_rate_EUR)
                 timestamp = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(balance['timestamp']))
                 exchange['wallets'].append({'timestamp':timestamp, 'type': w['type'], 'currency': w['currency'], 'balance': balance['balance'], 'balance_euro': balance_in_EUR})
@@ -72,7 +72,9 @@ class Webservice(object):
         p.ygrid.band_fill_color="olive"
         p.ygrid.band_fill_alpha = 0.1
 
-        balance = self.database.get_balance_in_euro_from_exchange(exchange_id, timeframe, modifier)
+        database = db.Database(self.config['database'])
+
+        balance = database.get_balance_in_euro_from_exchange(exchange_id, timeframe, modifier)
 
         if balance:
             # fix the dateformat for the balance entries
@@ -112,8 +114,10 @@ class Webservice(object):
         p.ygrid.band_fill_color="olive"
         p.ygrid.band_fill_alpha = 0.1
 
+        database = db.Database(self.config['database'])
+
         # get all wallets from the exchange
-        wallets = self.database.get_wallets_from_exchange(exchange_id)
+        wallets = database.get_wallets_from_exchange(exchange_id)
 
         # loop trough all wallets and prepare the balance
         loop_count = 0
@@ -123,7 +127,7 @@ class Webservice(object):
                 continue
 
             # get the last n days of balance data
-            balance = self.database.get_balance_from_wallet(w['id'],timeframe,modifier)
+            balance = database.get_balance_from_wallet(w['id'],timeframe,modifier)
 
             # only get data from wallets with available balance 
             if balance:
@@ -161,8 +165,10 @@ class Webservice(object):
         p.ygrid.band_fill_color="olive"
         p.ygrid.band_fill_alpha = 0.1
 
+        database = db.Database(self.config['database'])
+
         # get all wallets from the exchange
-        wallets = self.database.get_wallets_from_exchange(exchange_id)
+        wallets = database.get_wallets_from_exchange(exchange_id)
 
         # loop trough all wallets and prepare the balance
         loop_count = 0
@@ -171,7 +177,7 @@ class Webservice(object):
             if w['currency'] == "EUR":
                 continue
             # get the last n days of exachange rates
-            rate = self.database.get_rate_for_wallet(w['id'],'EUR',timeframe,modifier)
+            rate = database.get_rate_for_wallet(w['id'],'EUR',timeframe,modifier)
             # only get data from wallets with available rates 
             if rate:
                 # fix the dateformat for the balance entries
