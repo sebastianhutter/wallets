@@ -12,6 +12,7 @@ pipelines:
     stages:
       - Build:
           jobs:
+            elastic_profile_id: "test"
             build:
               artifacts:
                - build:
