@@ -13,6 +13,7 @@ pipelines:
       - Build:
           jobs:
             build:
+              elastic_profile_id: "test"
               artifacts:
                - build:
                    source: image_version
