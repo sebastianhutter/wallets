@@ -4,7 +4,7 @@ bottle==0.12.13
 certifi==2017.7.27.1
 chardet==3.0.4
 idna==2.6
-Jinja2==2.9.6
+Jinja2==2.11.3
 krakenex==0.1.4
 MarkupSafe==1.0
 numpy==1.13.1
