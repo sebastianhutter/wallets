@@ -1,6 +1,6 @@
 bkcharts==0.2
 bokeh==0.12.6
-bottle==0.12.13
+bottle==0.12.20
 certifi==2017.7.27.1
 chardet==3.0.4
 idna==2.6
